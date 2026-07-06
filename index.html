@@ -3,461 +3,580 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claude Code コマンドチートシート</title>
+<title>Claude Code 早見表</title>
 <style>
+  /* ---- tokens : dark is the primary identity, light fully supported ---- */
   :root {
-    --bg: #f7f7f5;
-    --card-bg: #ffffff;
-    --text: #1f1f1f;
-    --muted: #6b6b6b;
-    --border: #e5e3de;
-    --accent: #b45309;
-    --accent-bg: #fef3e2;
-    --code-bg: #f1efe9;
-    --code-text: #7a3e00;
-    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 8px rgba(0,0,0,0.04);
+    --bg:        #0f141b;
+    --bg-elev:   #151b25;
+    --bg-code:   #1d2632;
+    --bg-row:    #131923;
+    --border:    #24303f;
+    --border-soft:#1b2431;
+    --text:      #d7dee9;
+    --muted:     #8493a6;
+    --faint:     #5d6b7e;
+    --accent:    #56c2d6;
+    --accent-2:  #7fd6b8;
+    --accent-bg: rgba(86,194,214,0.10);
+    --good:      #74c69d;
+    --warn:      #e0b878;
+    --shadow:    0 1px 0 rgba(255,255,255,0.02) inset, 0 8px 24px rgba(0,0,0,0.35);
   }
-  @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: light) {
     :root {
-      --bg: #16161a;
-      --card-bg: #1f1f24;
-      --text: #ecebe8;
-      --muted: #a3a3a3;
-      --border: #33333a;
-      --accent: #f0a860;
-      --accent-bg: #2b2419;
-      --code-bg: #26262c;
-      --code-text: #f0a860;
-      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 8px rgba(0,0,0,0.3);
+      --bg:        #f5f7fa;
+      --bg-elev:   #ffffff;
+      --bg-code:   #eceff3;
+      --bg-row:    #f9fafb;
+      --border:    #d6dde6;
+      --border-soft:#e5e9ef;
+      --text:      #1b232e;
+      --muted:     #56636f;
+      --faint:     #8a97a5;
+      --accent:    #0c86a0;
+      --accent-2:  #148a68;
+      --accent-bg: rgba(12,134,160,0.08);
+      --good:      #2f855a;
+      --warn:      #a86c12;
+      --shadow:    0 1px 2px rgba(16,24,40,0.04), 0 6px 20px rgba(16,24,40,0.06);
     }
   }
-  :root[data-theme="light"] {
-    --bg: #f7f7f5; --card-bg: #ffffff; --text: #1f1f1f; --muted: #6b6b6b;
-    --border: #e5e3de; --accent: #b45309; --accent-bg: #fef3e2;
-    --code-bg: #f1efe9; --code-text: #7a3e00;
-    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 8px rgba(0,0,0,0.04);
-  }
+  /* viewer / manual toggle wins in both directions */
   :root[data-theme="dark"] {
-    --bg: #16161a; --card-bg: #1f1f24; --text: #ecebe8; --muted: #a3a3a3;
-    --border: #33333a; --accent: #f0a860; --accent-bg: #2b2419;
-    --code-bg: #26262c; --code-text: #f0a860;
-    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 8px rgba(0,0,0,0.3);
+    --bg:#0f141b; --bg-elev:#151b25; --bg-code:#1d2632; --bg-row:#131923;
+    --border:#24303f; --border-soft:#1b2431; --text:#d7dee9; --muted:#8493a6;
+    --faint:#5d6b7e; --accent:#56c2d6; --accent-2:#7fd6b8; --accent-bg:rgba(86,194,214,0.10);
+    --good:#74c69d; --warn:#e0b878; --shadow:0 1px 0 rgba(255,255,255,0.02) inset, 0 8px 24px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="light"] {
+    --bg:#f5f7fa; --bg-elev:#ffffff; --bg-code:#eceff3; --bg-row:#f9fafb;
+    --border:#d6dde6; --border-soft:#e5e9ef; --text:#1b232e; --muted:#56636f;
+    --faint:#8a97a5; --accent:#0c86a0; --accent-2:#148a68; --accent-bg:rgba(12,134,160,0.08);
+    --good:#2f855a; --warn:#a86c12; --shadow:0 1px 2px rgba(16,24,40,0.04), 0 6px 20px rgba(16,24,40,0.06);
   }
 
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
+    margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    font-family: -apple-system, "Segoe UI", "Yu Gothic UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
     line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
   }
-  main {
-    max-width: 880px;
+  :root {
+    --mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", "Yu Gothic", "Hiragino Kaku Gothic ProN", monospace;
+  }
+  .wrap {
+    max-width: 960px;
     margin: 0 auto;
-    padding: 48px 20px 96px;
+    padding: 40px 22px 120px;
   }
-  header {
-    margin-bottom: 8px;
+
+  /* ---- masthead : a terminal prompt line ---- */
+  .top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
   }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--faint);
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+  }
+  .kicker .p { color: var(--accent); }
+  .kicker .c { color: var(--muted); }
   h1 {
-    font-size: 1.7rem;
-    margin: 0 0 8px;
+    font-family: var(--mono);
+    font-size: 1.9rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    text-wrap: balance;
   }
+  h1 .blink {
+    color: var(--accent);
+    font-weight: 400;
+    animation: blink 1.2s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
   .lead {
     color: var(--muted);
-    font-size: 1rem;
-    margin: 0 0 8px;
+    max-width: 60ch;
+    margin: 0;
+    font-size: 0.98rem;
   }
-  .toc {
-    margin: 24px 0 40px;
-    padding: 16px 20px;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 0.9rem;
-  }
-  .toc-title {
-    font-weight: 600;
-    color: var(--muted);
+  .theme-btn {
+    flex: 0 0 auto;
+    font-family: var(--mono);
     font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: var(--muted);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: border-color .15s, color .15s;
+  }
+  .theme-btn:hover { border-color: var(--accent); color: var(--text); }
+  .theme-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .theme-btn .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+
+  /* ---- quickstart ---- */
+  .quick {
+    margin: 40px 0 12px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .quick-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border-soft);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
+  .tl { display: inline-flex; gap: 6px; margin-right: 6px; }
+  .tl i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; opacity: .8; }
+  .tl i:nth-child(1){ background:#e0736b; } .tl i:nth-child(2){ background:#e0b878; } .tl i:nth-child(3){ background:#74c69d; }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-soft);
+  }
+  .step { background: var(--bg-elev); padding: 18px 18px 20px; }
+  .step .n {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    display: block;
     margin-bottom: 8px;
   }
-  .toc ol {
-    margin: 0;
-    padding-left: 1.2em;
-  }
-  .toc a {
-    color: var(--text);
-    text-decoration: none;
-  }
-  .toc a:hover { color: var(--accent); }
+  .step .t { font-weight: 600; font-size: 0.95rem; margin-bottom: 6px; }
+  .step .d { color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
+  @media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
 
-  h2 {
-    font-size: 1.2rem;
-    margin: 48px 0 4px;
-    scroll-margin-top: 16px;
-  }
-  .section-desc {
-    color: var(--muted);
+  /* ---- sections ---- */
+  section { margin-top: 52px; scroll-margin-top: 14px; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .sec-idx {
+    font-family: var(--mono);
     font-size: 0.9rem;
-    margin: 0 0 16px;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
   }
-  code {
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    background: var(--code-bg);
-    color: var(--code-text);
-    padding: 0.15em 0.45em;
-    border-radius: 4px;
-    font-size: 0.92em;
+  h2 {
+    font-family: var(--mono);
+    font-size: 1.12rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .sec-desc { color: var(--muted); font-size: 0.88rem; margin: 6px 0 16px; }
+
+  /* ---- reference table (editor-output styling) ---- */
+  .panel {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg-elev);
+    box-shadow: var(--shadow);
+  }
+  .tbl-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  thead th {
+    text-align: left;
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--bg-row);
     white-space: nowrap;
   }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    font-size: 0.92rem;
-  }
-  th, td {
-    text-align: left;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
+  tbody td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border-soft);
     vertical-align: top;
   }
-  th {
-    color: var(--muted);
-    font-weight: 600;
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background .12s; }
+  tbody tr:hover { background: var(--bg-row); }
+  td.k { width: 34%; white-space: nowrap; }
+  @media (max-width: 640px){ td.k { width: auto; white-space: normal; } }
+
+  /* command / key tokens */
+  .cmd {
+    font-family: var(--mono);
+    font-size: 0.86rem;
+    color: var(--accent);
+    background: var(--bg-code);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    padding: 2px 8px;
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    transition: border-color .12s, color .12s;
+  }
+  .cmd:hover { border-color: var(--accent); }
+  .cmd:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .cmd .flag { color: var(--muted); }
+  .cmd.slash { color: var(--accent-2); }
+  .alias {
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: var(--faint);
+    margin-left: 8px;
+  }
+  .alias b { color: var(--muted); font-weight: 600; }
+  kbd {
+    font-family: var(--mono);
     font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  tr:last-child td { border-bottom: none; }
-  col.col-cmd { width: 30%; }
-  col.col-short { width: 16%; }
-  .note {
-    background: var(--accent-bg);
+    color: var(--text);
+    background: var(--bg-code);
     border: 1px solid var(--border);
-    border-left: 4px solid var(--accent);
-    border-radius: 8px;
-    padding: 14px 18px;
-    font-size: 0.9rem;
-    margin: 16px 0 28px;
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    padding: 2px 7px;
+    white-space: nowrap;
   }
-  .table-wrap {
-    overflow-x: auto;
-  }
-  footer {
-    margin-top: 56px;
+  td.k .plus { color: var(--faint); margin: 0 3px; font-family: var(--mono); font-size: 0.8rem; }
+  .desc code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    background: var(--bg-code);
     color: var(--muted);
-    font-size: 0.82rem;
-    border-top: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 5px;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 1px 6px;
+    border-radius: 5px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .tag.safe { color: var(--good); border: 1px solid color-mix(in srgb, var(--good) 40%, transparent); }
+  .tag.care { color: var(--warn); border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent); }
+
+  /* ---- tips callout ---- */
+  .tips {
+    margin-top: 52px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    background: var(--accent-bg);
+    padding: 20px 22px;
+  }
+  .tips h3 {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .tips h3 .p { color: var(--accent); }
+  .tips ul { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 10px; }
+  .tips li { padding-left: 22px; position: relative; font-size: 0.9rem; color: var(--text); }
+  .tips li::before {
+    content: "›"; position: absolute; left: 4px; top: -1px;
+    color: var(--accent); font-family: var(--mono); font-weight: 700;
+  }
+  .tips li b { font-weight: 600; }
+  .tips li .desc { color: var(--muted); }
+
+  /* note */
+  .note {
+    margin: 26px 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .note .m { color: var(--accent); font-family: var(--mono); flex: 0 0 auto; }
+
+  footer {
+    margin-top: 64px;
     padding-top: 20px;
+    border-top: 1px solid var(--border-soft);
+    color: var(--faint);
+    font-size: 0.8rem;
+    font-family: var(--mono);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  /* toast */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 12px);
+    background: var(--bg-code); color: var(--text);
+    border: 1px solid var(--accent);
+    font-family: var(--mono); font-size: 0.8rem;
+    padding: 8px 14px; border-radius: 8px;
+    opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s;
+    box-shadow: var(--shadow); z-index: 50;
+  }
+  #toast.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) {
+    h1 .blink { animation: none; }
+    #toast { transition: opacity .18s; }
   }
 </style>
 </head>
 <body>
-<main>
+<div class="wrap">
 
-<header>
-  <h1>Claude Code コマンドチートシート</h1>
-  <p class="lead">ターミナルで Claude Code をはじめて使う人向け。よく使う操作をジャンル別・重要度順にまとめました。</p>
-</header>
+  <div class="top">
+    <div>
+      <div class="kicker"><span class="c">~/dev</span> <span class="p">$</span> claude</div>
+      <h1>Claude Code 早見表<span class="blink">▊</span></h1>
+      <p class="lead">ターミナルではじめて Claude Code を触る人のための、実用リファレンス。上から順に、覚える必要のある順番で並べています。</p>
+    </div>
+    <button class="theme-btn" id="themeToggle" type="button" aria-label="配色を切り替える">
+      <span class="dot"></span><span id="themeLabel">dark</span>
+    </button>
+  </div>
 
-<div class="note">
-  <strong>用語だけ先に：</strong> 「セッション」＝Claude Codeとの1回の会話のこと。「スラッシュコマンド」＝会話中に <code>/</code> から入力する特別な命令のこと。
+  <div class="note">
+    <span class="m">//</span>
+    <span><b>用語だけ先に：</b>「セッション」＝Claude Code との1回の会話。「スラッシュコマンド」＝会話中に <code>/</code> から打つ命令。<b>コマンドはクリックでコピー</b>できます。</span>
+  </div>
+
+  <!-- quickstart -->
+  <div class="quick">
+    <div class="quick-head"><span class="tl"><i></i><i></i><i></i></span>quickstart — 最初の3ステップ</div>
+    <div class="steps">
+      <div class="step">
+        <span class="n">STEP 01</span>
+        <div class="t">ターミナルを開く</div>
+        <div class="d">Windows なら「ターミナル」または PowerShell を起動する。</div>
+      </div>
+      <div class="step">
+        <span class="n">STEP 02</span>
+        <div class="t">作業フォルダへ移動</div>
+        <div class="d"><span class="cmd">cd <span class="flag">フォルダのパス</span></span> と打つ。フォルダを窓にドラッグするとパスが入る。</div>
+      </div>
+      <div class="step">
+        <span class="n">STEP 03</span>
+        <div class="t">会話を始める</div>
+        <div class="d"><span class="cmd">claude</span> と打つだけ。あとは日本語で話しかけるだけでOK。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 00 terminal basics -->
+  <section id="s00">
+    <div class="sec-head"><span class="sec-idx">00</span><h2>ターミナルの基本移動</h2></div>
+    <p class="sec-desc">Claude Code の前に、フォルダを行き来する最低限の操作。Windows(PowerShell)・Mac 共通で使えます。</p>
+    <div class="panel"><div class="tbl-scroll"><table>
+      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+      <tbody>
+        <tr><td class="k"><span class="cmd">cd <span class="flag">パス</span></span></td><td class="desc">指定したフォルダへ移動する。<code>cd ..</code> で一つ上の階層へ戻る。</td></tr>
+        <tr><td class="k"><span class="cmd">ls</span></td><td class="desc">今いるフォルダの中身（ファイル・フォルダ）を一覧表示する。</td></tr>
+        <tr><td class="k"><span class="cmd">pwd</span></td><td class="desc">今どこのフォルダにいるかのパスを表示する。「迷子」になったときに。</td></tr>
+        <tr><td class="k"><span class="cmd">mkdir <span class="flag">名前</span></span></td><td class="desc">新しいフォルダを作る。</td></tr>
+      </tbody>
+    </table></div></div>
+  </section>
+
+  <!-- 01 start / resume -->
+  <section id="s01">
+    <div class="sec-head"><span class="sec-idx">01</span><h2>セッションの開始・再開</h2></div>
+    <p class="sec-desc">Claude Code を立ち上げる／過去の会話に戻る、ターミナルで打つコマンド。まず覚える系。</p>
+    <div class="panel"><div class="tbl-scroll"><table>
+      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+      <tbody>
+        <tr><td class="k"><span class="cmd">claude</span></td><td class="desc">今いるフォルダで、新しい会話を始める。</td></tr>
+        <tr><td class="k"><span class="cmd">claude <span class="flag">"やりたいこと"</span></span></td><td class="desc">最初の指示を渡した状態で、新しい会話をいきなり開始する。</td></tr>
+        <tr><td class="k"><span class="cmd">claude <span class="flag">--continue</span></span><span class="alias"><b>-c</b></span></td><td class="desc">今いるフォルダの一番最近の会話に、一覧を挟まず即座に戻る。「さっきの続き」に。</td></tr>
+        <tr><td class="k"><span class="cmd">claude <span class="flag">--resume</span></span><span class="alias"><b>-r</b></span></td><td class="desc">過去の会話の一覧（ピッカー）を出し、選んで開く。どれか選びたいときに。</td></tr>
+        <tr><td class="k"><span class="cmd">claude <span class="flag">-p "質問"</span></span></td><td class="desc">対話モードに入らず、1回だけ質問して答えを表示し終了する。サッと調べたいときに。</td></tr>
+        <tr><td class="k"><span class="cmd">claude <span class="flag">--no-session-persistence</span></span></td><td class="desc">この回の会話を履歴に残さない（<code>-p</code> と併用）。一回きり・残したくない作業に。</td></tr>
+      </tbody>
+    </table></div></div>
+  </section>
+
+  <!-- 02 in-conversation slash -->
+  <section id="s02">
+    <div class="sec-head"><span class="sec-idx">02</span><h2>会話中によく使うコマンド</h2></div>
+    <p class="sec-desc">会話の中で <code>/</code> を打つと出るスラッシュコマンド。使用頻度の高い順。</p>
+    <div class="panel"><div class="tbl-scroll"><table>
+      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+      <tbody>
+        <tr><td class="k"><span class="cmd slash">/clear</span></td><td class="desc">会話をリセットして新しい話題を始める。前の会話は消えず <code>--resume</code> で開ける。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/compact</span></td><td class="desc">会話が長くなったとき、内容を要約して軽くする（同じ会話のまま続けたいとき）。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/context</span></td><td class="desc">今どれだけ会話の「記憶容量」を使っているかを可視化する。重くなってきたときに。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/help</span></td><td class="desc">使い方のヘルプ・コマンド一覧を表示する。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/model</span></td><td class="desc">使う AI モデルを切り替える。引数なしで実行すると選択メニューが出る。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/usage</span></td><td class="desc">今のセッションの利用料金・使用量を表示する（<code>/cost</code> でも同じ）。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/permissions</span></td><td class="desc">ファイル変更やコマンド実行のたびに確認するか、のルールを管理する。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/fewer-permission-prompts</span></td><td class="desc">過去のやり取りから「確認不要」な操作を自動で許可リスト化。確認が多くて煩わしいときに。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/init</span></td><td class="desc">このプロジェクト用の説明ファイル <code>CLAUDE.md</code> を作る。新フォルダで最初にやると良い。</td></tr>
+      </tbody>
+    </table></div></div>
+  </section>
+
+  <!-- 03 keyboard -->
+  <section id="s03">
+    <div class="sec-head"><span class="sec-idx">03</span><h2>キーボード操作</h2></div>
+    <p class="sec-desc">マウスを使わず、キーだけでサッと操作する。太字は特に出番が多いもの。</p>
+    <div class="panel"><div class="tbl-scroll"><table>
+      <thead><tr><th>キー</th><th>これは何をする？</th></tr></thead>
+      <tbody>
+        <tr><td class="k"><kbd>Esc</kbd></td><td class="desc">Claude が応答・作業している最中に途中で止め、指示を出し直す。<span class="tag safe">安全</span></td></tr>
+        <tr><td class="k"><kbd>Esc</kbd><span class="plus">×2</span></td><td class="desc">入力欄が空のとき、以前の状態に戻す「巻き戻しメニュー」を開く。やり直しに便利。</td></tr>
+        <tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>C</kbd></td><td class="desc">1回目は入力を消す（実行中なら中断）。空の状態でもう1回押すと終了。</td></tr>
+        <tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>D</kbd></td><td class="desc">Claude Code を終了する。</td></tr>
+        <tr><td class="k"><kbd>Shift</kbd><span class="plus">+</span><kbd>Tab</kbd></td><td class="desc">権限モードを切り替える（計画だけ立てる「プランモード」／編集を自動承認 など）。</td></tr>
+        <tr><td class="k"><kbd>!</kbd><span class="plus">先頭</span></td><td class="desc">その行をそのままターミナルのコマンドとして実行する（例: <code>!git status</code>）。</td></tr>
+        <tr><td class="k"><kbd>@</kbd></td><td class="desc">ファイル名の候補が出て、会話中に特定のファイルを指し示せる。</td></tr>
+        <tr><td class="k"><kbd>Shift</kbd><span class="plus">+</span><kbd>Enter</kbd></td><td class="desc">改行して複数行の指示を入力する（多くのターミナルでそのまま使える）。</td></tr>
+        <tr><td class="k"><kbd>↑</kbd></td><td class="desc">過去に入力したメッセージを呼び戻す。</td></tr>
+        <tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>L</kbd></td><td class="desc">画面表示が崩れたときに、描画をきれいに引き直す（会話内容は消えない）。</td></tr>
+      </tbody>
+    </table></div></div>
+  </section>
+
+  <!-- 04 review / redo -->
+  <section id="s04">
+    <div class="sec-head"><span class="sec-idx">04</span><h2>作業を見直す・やり直す</h2></div>
+    <p class="sec-desc">コードを書いてもらったあと、確認したり、失敗を戻したりするときに。</p>
+    <div class="panel"><div class="tbl-scroll"><table>
+      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+      <tbody>
+        <tr><td class="k"><span class="cmd slash">/rewind</span></td><td class="desc">会話やコードの変更を以前の状態に巻き戻す。「元に戻したい」ときの安全ネット。<span class="tag safe">安全</span></td></tr>
+        <tr><td class="k"><span class="cmd slash">/diff</span></td><td class="desc">今どんな変更が加えられたかを、差分表示で確認する。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/code-review</span></td><td class="desc">今の変更にバグや改善点がないか、Claude にレビューさせる。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/verify</span></td><td class="desc">変更が「本当に動くか」を、実際にアプリを起動・操作して確認する。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/run</span></td><td class="desc">プロジェクトのアプリを実際に起動し、動いている様子を見せてもらう。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/simplify</span></td><td class="desc">バグ探しはせず、コードの重複や無駄を整理してもらう。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/security-review</span></td><td class="desc">変更にセキュリティ上の懸念（情報漏洩・認証の穴 など）がないか確認する。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/doctor</span></td><td class="desc">Claude Code のインストールや設定に問題がないか診断する。動かないときに。</td></tr>
+      </tbody>
+    </table></div></div>
+  </section>
+
+  <!-- 05 skills -->
+  <section id="s05">
+    <div class="sec-head"><span class="sec-idx">05</span><h2>便利なスキル</h2></div>
+    <p class="sec-desc">「スキル」は特定の作業を任せる専用コマンド。<code>/名前</code> で呼ぶほか、普通に頼むと Claude が自動で使うこともある。</p>
+    <div class="panel"><div class="tbl-scroll"><table>
+      <thead><tr><th>スキル</th><th>これは何をする？</th></tr></thead>
+      <tbody>
+        <tr><td class="k"><span class="cmd slash">/deep-research</span></td><td class="desc">1つの問いに複数の Web 検索とクロスチェックを行い、根拠付きのレポートにまとめる。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/loop</span></td><td class="desc">指示や別スキルを一定間隔で繰り返す（例: <code>/loop 10m デプロイ終わった？</code>）。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/schedule</span></td><td class="desc">決まった時間（毎朝9時など）にクラウドで自動実行されるタスクを設定する。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/dataviz</span></td><td class="desc">グラフ・ダッシュボードを作るとき、見やすい配色やレイアウトの指針を適用する。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/update-config</span></td><td class="desc">権限・環境変数・自動実行（フック）など Claude Code 自体の設定をまとめて変える。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/keybindings-help</span></td><td class="desc">キーボードショートカットを自分好みにカスタマイズしたいときに。</td></tr>
+      </tbody>
+    </table></div></div>
+  </section>
+
+  <!-- 06 advanced -->
+  <section id="s06">
+    <div class="sec-head"><span class="sec-idx">06</span><h2>発展編</h2></div>
+    <p class="sec-desc">慣れてきたら覚えると便利。最初は読み飛ばしてOK。</p>
+    <div class="panel"><div class="tbl-scroll"><table>
+      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+      <tbody>
+        <tr><td class="k"><span class="cmd slash">/plan</span></td><td class="desc">大きな変更の前に、計画だけ立てさせてから実行の許可を出す「プランモード」に入る。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/memory</span></td><td class="desc">プロジェクトの説明ファイル <code>CLAUDE.md</code> を編集する。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/agents</span></td><td class="desc">特定の作業を任せる「サブエージェント」を作成・管理する。</td></tr>
+        <tr><td class="k"><span class="cmd slash">/mcp</span></td><td class="desc">外部サービス（Slack・Google カレンダーなど）と連携する MCP サーバーを管理する。</td></tr>
+        <tr><td class="k"><span class="cmd">claude <span class="flag">update</span></span></td><td class="desc">Claude Code 自体を最新バージョンに更新する。</td></tr>
+        <tr><td class="k"><span class="cmd">claude <span class="flag">--model 名前</span></span></td><td class="desc">起動時に使うモデルを指定する（例: <code>sonnet</code> / <code>opus</code>）。</td></tr>
+      </tbody>
+    </table></div></div>
+  </section>
+
+  <!-- tips -->
+  <div class="tips">
+    <h3><span class="p">$</span> うまく頼むコツ</h3>
+    <ul>
+      <li><b>具体的に頼む。</b><span class="desc">「バグ直して」より「ログインを押すとエラーになる、原因を調べて直して」。状況が詳しいほど精度が上がる。</span></li>
+      <li><b>1回に1つの目的。</b><span class="desc">大きすぎる依頼は <code>/plan</code> で計画から。まとめて頼むより、区切って進める方が確実。</span></li>
+      <li><b>材料を渡す。</b><span class="desc">ファイルは <code>@</code> で指定、エラーやログは <code>!</code> で実行して共有すると、Claude がそのまま読んで対応できる。</span></li>
+      <li><b>遠慮なく試す。</b><span class="desc">間違えても <kbd>Esc</kbd> で止められ、<code>/rewind</code> で戻せる。壊す心配より、まず動かしてみる。</span></li>
+    </ul>
+  </div>
+
+  <footer>
+    <span>claude-code cheatsheet — 個人利用メモ</span>
+    <a href="https://github.com/fc-chintel/claude-code-cheatsheet">github.com/fc-chintel/claude-code-cheatsheet</a>
+  </footer>
+
 </div>
 
-<nav class="toc">
-  <div class="toc-title">目次</div>
-  <ol>
-    <li><a href="#start">セッションの開始・再開（ターミナルで打つコマンド）</a></li>
-    <li><a href="#daily">会話中によく使うスラッシュコマンド</a></li>
-    <li><a href="#keys">覚えておくと捗るキー操作</a></li>
-    <li><a href="#work">作業を進める・見直すときに使うコマンド</a></li>
-    <li><a href="#advanced">さらに使いこなしたい人向け（発展編）</a></li>
-    <li><a href="#skills">自動でやってくれる便利なスキル</a></li>
-  </ol>
-</nav>
+<div id="toast" role="status" aria-live="polite">copied</div>
 
-<h2 id="start">1. セッションの開始・再開（ターミナルで打つコマンド）</h2>
-<p class="section-desc">Claude Codeを立ち上げる・過去の会話に戻るときに使う、最初に覚える系のコマンド。</p>
+<script>
+(function () {
+  // theme: manual toggle + persistence (works standalone on GitHub Pages)
+  var root = document.documentElement;
+  var label = document.getElementById('themeLabel');
+  function current() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t;
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+  function apply(t) { root.setAttribute('data-theme', t); label.textContent = t; }
+  try {
+    var saved = localStorage.getItem('cc-theme');
+    if (saved) apply(saved); else label.textContent = current();
+  } catch (e) { label.textContent = current(); }
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    var next = current() === 'dark' ? 'light' : 'dark';
+    apply(next);
+    try { localStorage.setItem('cc-theme', next); } catch (e) {}
+  });
 
-<div class="table-wrap">
-<table>
-  <colgroup><col class="col-cmd"><col class="col-short"><col></colgroup>
-  <thead>
-    <tr><th>コマンド</th><th>短縮形</th><th>これは何をする？</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>claude</code></td>
-      <td>—</td>
-      <td>今いるフォルダで、新しい会話（セッション）を始める。</td>
-    </tr>
-    <tr>
-      <td><code>claude "やりたいこと"</code></td>
-      <td>—</td>
-      <td>最初の指示を渡した状態で、新しい会話をいきなり開始する。</td>
-    </tr>
-    <tr>
-      <td><code>claude --continue</code></td>
-      <td><code>claude -c</code></td>
-      <td>今いるフォルダの、一番最近の会話に一覧を挟まず即座に戻る。「さっきの続き」をしたいときに。</td>
-    </tr>
-    <tr>
-      <td><code>claude --resume</code></td>
-      <td><code>claude -r</code></td>
-      <td>過去の会話の一覧（ピッカー）を表示し、そこから選んで開く。どの会話か選びたいときに。</td>
-    </tr>
-    <tr>
-      <td><code>claude --print "質問"</code></td>
-      <td><code>claude -p "質問"</code></td>
-      <td>対話モードに入らず、1回だけ質問して答えを表示しすぐ終了する。ちょっと調べたいだけのときに便利。</td>
-    </tr>
-    <tr>
-      <td><code>claude --no-session-persistence</code></td>
-      <td>—</td>
-      <td>この回の会話を履歴に残さない（<code>--print</code>と組み合わせて使う）。見られたくない一回きりの作業のときに。</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<h2 id="daily">2. 会話中によく使うスラッシュコマンド</h2>
-<p class="section-desc">会話の中で <code>/</code> を入力すると出てくる操作。使用頻度が高いものから順に。</p>
-
-<div class="table-wrap">
-<table>
-  <colgroup><col class="col-cmd"><col></colgroup>
-  <thead>
-    <tr><th>コマンド</th><th>これは何をする？</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>/clear</code></td>
-      <td>今の会話をリセットして真っさらな状態で新しい話題を始める。前の会話は消えず、後から <code>--resume</code> で開ける。</td>
-    </tr>
-    <tr>
-      <td><code>/compact</code></td>
-      <td>会話が長くなってきたときに、内容を要約して軽くする（同じ会話のまま続けたいとき）。</td>
-    </tr>
-    <tr>
-      <td><code>/help</code></td>
-      <td>使い方のヘルプを表示する。</td>
-    </tr>
-    <tr>
-      <td><code>/model</code></td>
-      <td>使うAIモデルを切り替える。何も指定せず実行すると選択メニューが出る。</td>
-    </tr>
-    <tr>
-      <td><code>/usage</code></td>
-      <td>今のセッションの利用料金や使用量を表示する（<code>/cost</code> でも同じ）。</td>
-    </tr>
-    <tr>
-      <td><code>/permissions</code></td>
-      <td>ファイル変更やコマンド実行のたびに確認を求めるかどうかのルールを管理する。</td>
-    </tr>
-    <tr>
-      <td><code>/fewer-permission-prompts</code></td>
-      <td>過去のやり取りを見て「これは確認不要だろう」という操作を自動で許可リストに追加してくれる。確認ダイアログが多くて煩わしいときに。</td>
-    </tr>
-    <tr>
-      <td><code>/init</code></td>
-      <td>このプロジェクト用の説明ファイル（<code>CLAUDE.md</code>）を作成する。新しいフォルダで最初にやると良い。</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<h2 id="keys">3. 覚えておくと捗るキー操作</h2>
-<p class="section-desc">マウスを使わず、キーボードだけでサッと操作できる。</p>
-
-<div class="table-wrap">
-<table>
-  <colgroup><col class="col-cmd"><col></colgroup>
-  <thead>
-    <tr><th>キー</th><th>これは何をする？</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>Esc</code></td>
-      <td>Claudeが応答・作業している最中に、途中で止めて指示を出し直す。</td>
-    </tr>
-    <tr>
-      <td><code>Ctrl</code> + <code>C</code></td>
-      <td>1回目は入力中のテキストを消す（実行中なら中断）。何もない状態でもう1回押すと終了する。</td>
-    </tr>
-    <tr>
-      <td><code>Ctrl</code> + <code>D</code></td>
-      <td>Claude Codeを終了する。</td>
-    </tr>
-    <tr>
-      <td><code>Esc</code> を2回</td>
-      <td>入力欄が空なら、以前の状態に戻す「巻き戻しメニュー」を開く（コードやり直しに便利）。</td>
-    </tr>
-    <tr>
-      <td><code>!</code> を先頭に付ける</td>
-      <td>そのままターミナルのコマンドとして実行する（例: <code>!git status</code>）。</td>
-    </tr>
-    <tr>
-      <td><code>@</code></td>
-      <td>ファイル名の候補が出てきて、会話中に特定のファイルを指定できる。</td>
-    </tr>
-    <tr>
-      <td><code>Shift</code> + <code>Enter</code></td>
-      <td>改行して複数行の指示を入力する（多くのターミナルでそのまま使用可）。</td>
-    </tr>
-    <tr>
-      <td>&uarr; キー</td>
-      <td>過去に入力したメッセージを呼び戻す。</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<h2 id="work">4. 作業を進める・見直すときに使うコマンド</h2>
-<p class="section-desc">コードを書いてもらったあと、内容を確認したり、失敗をやり直したりするときに。</p>
-
-<div class="table-wrap">
-<table>
-  <colgroup><col class="col-cmd"><col></colgroup>
-  <thead>
-    <tr><th>コマンド</th><th>これは何をする？</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>/rewind</code></td>
-      <td>会話やコードの変更を、以前の状態に巻き戻す。「やっぱり元に戻したい」ときの安全ネット。</td>
-    </tr>
-    <tr>
-      <td><code>/diff</code></td>
-      <td>今どんな変更が加えられたかを、差分表示で確認する。</td>
-    </tr>
-    <tr>
-      <td><code>/code-review</code></td>
-      <td>今の変更内容にバグや改善点がないか、Claudeにレビューさせる。</td>
-    </tr>
-    <tr>
-      <td><code>/verify</code></td>
-      <td>変更が「本当に動くか」を、実際にアプリを起動・操作して確認する。テストが通っただけでは分からない不具合に気づける。</td>
-    </tr>
-    <tr>
-      <td><code>/run</code></td>
-      <td>プロジェクトのアプリを実際に起動して、動いている様子を見せてもらう。</td>
-    </tr>
-    <tr>
-      <td><code>/simplify</code></td>
-      <td>バグ探しはせず、コードの重複や無駄を整理してもらう。</td>
-    </tr>
-    <tr>
-      <td><code>/security-review</code></td>
-      <td>変更内容にセキュリティ上の懸念（情報漏洩や認証の穴など）がないか確認する。</td>
-    </tr>
-    <tr>
-      <td><code>/review</code></td>
-      <td>GitHub上のプルリクエストをレビューする。</td>
-    </tr>
-    <tr>
-      <td><code>/doctor</code></td>
-      <td>Claude Codeのインストールや設定に問題がないか診断する。うまく動かないときに。</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<h2 id="advanced">5. さらに使いこなしたい人向け（発展編）</h2>
-<p class="section-desc">慣れてきたら覚えると便利。最初は読み飛ばしてOK。</p>
-
-<div class="table-wrap">
-<table>
-  <colgroup><col class="col-cmd"><col></colgroup>
-  <thead>
-    <tr><th>コマンド</th><th>これは何をする？</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>/plan</code></td>
-      <td>大きな変更に着手する前に、計画だけ立てさせてから実行の許可を出す「プランモード」に入る。</td>
-    </tr>
-    <tr>
-      <td><code>/memory</code></td>
-      <td>プロジェクトの説明ファイル（<code>CLAUDE.md</code>）を編集する。</td>
-    </tr>
-    <tr>
-      <td><code>/agents</code></td>
-      <td>特定の作業を任せる「サブエージェント」を作成・管理する。</td>
-    </tr>
-    <tr>
-      <td><code>/mcp</code></td>
-      <td>外部サービス（Slack、Googleカレンダーなど）と連携するMCPサーバーを管理する。</td>
-    </tr>
-    <tr>
-      <td><code>claude update</code></td>
-      <td>Claude Code自体を最新バージョンに更新する。</td>
-    </tr>
-    <tr>
-      <td><code>claude --model &lt;名前&gt;</code></td>
-      <td>起動時に使うモデルを指定する（例: <code>sonnet</code>, <code>opus</code>）。</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<h2 id="skills">6. 自動でやってくれる便利なスキル</h2>
-<p class="section-desc">「スキル」は特定の作業を任せるための専用コマンド。<code>/スキル名</code> で明示的に呼び出すか、普通に頼むだけでClaudeが自動的に使ってくれることもある。</p>
-
-<div class="table-wrap">
-<table>
-  <colgroup><col class="col-cmd"><col></colgroup>
-  <thead>
-    <tr><th>スキル</th><th>これは何をする？</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>/deep-research</code></td>
-      <td>1つの質問に対して複数のWeb検索・情報源のクロスチェックを行い、根拠付きのレポートにまとめる。「〇〇についてちゃんと調べて」というときに。</td>
-    </tr>
-    <tr>
-      <td><code>/loop</code></td>
-      <td>指示や別のスキルを一定間隔で繰り返し実行させる（例: <code>/loop 10m デプロイが終わったか確認して</code>）。</td>
-    </tr>
-    <tr>
-      <td><code>/schedule</code></td>
-      <td>決まった時間（毎朝9時など）にクラウド上で自動実行されるタスクを設定する。</td>
-    </tr>
-    <tr>
-      <td><code>/dataviz</code></td>
-      <td>グラフ・チャート・ダッシュボードを作るときに、見やすい配色やレイアウトの指針を適用する。</td>
-    </tr>
-    <tr>
-      <td><code>/claude-in-chrome</code></td>
-      <td>Chromeブラウザを自動操作する（フォーム入力、クリック、スクリーンショット取得など）。</td>
-    </tr>
-    <tr>
-      <td><code>/update-config</code></td>
-      <td>権限設定・環境変数・自動実行の仕組み（フック）など、Claude Code自体の動作設定をまとめて変更する。</td>
-    </tr>
-    <tr>
-      <td><code>/claude-api</code></td>
-      <td>Anthropic API（Claude API）を使ったコードを書く・移行するときのリファレンス。</td>
-    </tr>
-    <tr>
-      <td><code>/keybindings-help</code></td>
-      <td>キーボードショートカットを自分好みにカスタマイズしたいときに。</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<footer>
-  Claude Code チートシート — 個人利用メモ（公式ドキュメントを基に作成）
-</footer>
-
-</main>
+  // click-to-copy for command tokens
+  var toast = document.getElementById('toast'), timer;
+  function flash(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(function () { toast.classList.remove('show'); }, 1100);
+  }
+  document.querySelectorAll('.cmd').forEach(function (el) {
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('title', 'クリックでコピー');
+    function copy() {
+      var text = el.innerText.trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { flash('コピー: ' + text); },
+                                                  function () { flash('コピーできませんでした'); });
+      } else { flash('コピー: ' + text); }
+    }
+    el.addEventListener('click', copy);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copy(); }
+    });
+  });
+})();
+</script>
 </body>
 </html>
