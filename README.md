@@ -2,7 +2,7 @@
 
 ターミナルで Claude Code をはじめて使う人向けの、コマンド早見表です。
 
-公開ページ: (GitHub Pages のURLはここに追記します)
+公開ページ: https://fc-chintel.github.io/claude-code-cheatsheet/
 
 ## 内容
 
