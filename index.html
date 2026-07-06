@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code コマンドチートシート</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card-bg: #ffffff;
+    --text: #1f1f1f;
+    --muted: #6b6b6b;
+    --border: #e5e3de;
+    --accent: #b45309;
+    --accent-bg: #fef3e2;
+    --code-bg: #f1efe9;
+    --code-text: #7a3e00;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 8px rgba(0,0,0,0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16161a;
+      --card-bg: #1f1f24;
+      --text: #ecebe8;
+      --muted: #a3a3a3;
+      --border: #33333a;
+      --accent: #f0a860;
+      --accent-bg: #2b2419;
+      --code-bg: #26262c;
+      --code-text: #f0a860;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 8px rgba(0,0,0,0.3);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f7f7f5; --card-bg: #ffffff; --text: #1f1f1f; --muted: #6b6b6b;
+    --border: #e5e3de; --accent: #b45309; --accent-bg: #fef3e2;
+    --code-bg: #f1efe9; --code-text: #7a3e00;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 8px rgba(0,0,0,0.04);
+  }
+  :root[data-theme="dark"] {
+    --bg: #16161a; --card-bg: #1f1f24; --text: #ecebe8; --muted: #a3a3a3;
+    --border: #33333a; --accent: #f0a860; --accent-bg: #2b2419;
+    --code-bg: #26262c; --code-text: #f0a860;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 8px rgba(0,0,0,0.3);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    line-height: 1.7;
+  }
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 48px 20px 96px;
+  }
+  header {
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 1.7rem;
+    margin: 0 0 8px;
+  }
+  .lead {
+    color: var(--muted);
+    font-size: 1rem;
+    margin: 0 0 8px;
+  }
+  .toc {
+    margin: 24px 0 40px;
+    padding: 16px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+  }
+  .toc-title {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+  .toc ol {
+    margin: 0;
+    padding-left: 1.2em;
+  }
+  .toc a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .toc a:hover { color: var(--accent); }
+
+  h2 {
+    font-size: 1.2rem;
+    margin: 48px 0 4px;
+    scroll-margin-top: 16px;
+  }
+  .section-desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 0 16px;
+  }
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+    font-size: 0.92em;
+    white-space: nowrap;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  tr:last-child td { border-bottom: none; }
+  col.col-cmd { width: 30%; }
+  col.col-short { width: 16%; }
+  .note {
+    background: var(--accent-bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 0.9rem;
+    margin: 16px 0 28px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  footer {
+    margin-top: 56px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Claude Code コマンドチートシート</h1>
+  <p class="lead">ターミナルで Claude Code をはじめて使う人向け。よく使う操作をジャンル別・重要度順にまとめました。</p>
+</header>
+
+<div class="note">
+  <strong>用語だけ先に：</strong> 「セッション」＝Claude Codeとの1回の会話のこと。「スラッシュコマンド」＝会話中に <code>/</code> から入力する特別な命令のこと。
+</div>
+
+<nav class="toc">
+  <div class="toc-title">目次</div>
+  <ol>
+    <li><a href="#start">セッションの開始・再開（ターミナルで打つコマンド）</a></li>
+    <li><a href="#daily">会話中によく使うスラッシュコマンド</a></li>
+    <li><a href="#keys">覚えておくと捗るキー操作</a></li>
+    <li><a href="#work">作業を進める・見直すときに使うコマンド</a></li>
+    <li><a href="#advanced">さらに使いこなしたい人向け（発展編）</a></li>
+  </ol>
+</nav>
+
+<h2 id="start">1. セッションの開始・再開（ターミナルで打つコマンド）</h2>
+<p class="section-desc">Claude Codeを立ち上げる・過去の会話に戻るときに使う、最初に覚える系のコマンド。</p>
+
+<div class="table-wrap">
+<table>
+  <colgroup><col class="col-cmd"><col class="col-short"><col></colgroup>
+  <thead>
+    <tr><th>コマンド</th><th>短縮形</th><th>これは何をする？</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>claude</code></td>
+      <td>—</td>
+      <td>今いるフォルダで、新しい会話（セッション）を始める。</td>
+    </tr>
+    <tr>
+      <td><code>claude "やりたいこと"</code></td>
+      <td>—</td>
+      <td>最初の指示を渡した状態で、新しい会話をいきなり開始する。</td>
+    </tr>
+    <tr>
+      <td><code>claude --continue</code></td>
+      <td><code>claude -c</code></td>
+      <td>今いるフォルダの、一番最近の会話に一覧を挟まず即座に戻る。「さっきの続き」をしたいときに。</td>
+    </tr>
+    <tr>
+      <td><code>claude --resume</code></td>
+      <td><code>claude -r</code></td>
+      <td>過去の会話の一覧（ピッカー）を表示し、そこから選んで開く。どの会話か選びたいときに。</td>
+    </tr>
+    <tr>
+      <td><code>claude --print "質問"</code></td>
+      <td><code>claude -p "質問"</code></td>
+      <td>対話モードに入らず、1回だけ質問して答えを表示しすぐ終了する。ちょっと調べたいだけのときに便利。</td>
+    </tr>
+    <tr>
+      <td><code>claude --no-session-persistence</code></td>
+      <td>—</td>
+      <td>この回の会話を履歴に残さない（<code>--print</code>と組み合わせて使う）。見られたくない一回きりの作業のときに。</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="daily">2. 会話中によく使うスラッシュコマンド</h2>
+<p class="section-desc">会話の中で <code>/</code> を入力すると出てくる操作。使用頻度が高いものから順に。</p>
+
+<div class="table-wrap">
+<table>
+  <colgroup><col class="col-cmd"><col></colgroup>
+  <thead>
+    <tr><th>コマンド</th><th>これは何をする？</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>/clear</code></td>
+      <td>今の会話をリセットして真っさらな状態で新しい話題を始める。前の会話は消えず、後から <code>--resume</code> で開ける。</td>
+    </tr>
+    <tr>
+      <td><code>/compact</code></td>
+      <td>会話が長くなってきたときに、内容を要約して軽くする（同じ会話のまま続けたいとき）。</td>
+    </tr>
+    <tr>
+      <td><code>/help</code></td>
+      <td>使い方のヘルプを表示する。</td>
+    </tr>
+    <tr>
+      <td><code>/model</code></td>
+      <td>使うAIモデルを切り替える。何も指定せず実行すると選択メニューが出る。</td>
+    </tr>
+    <tr>
+      <td><code>/usage</code></td>
+      <td>今のセッションの利用料金や使用量を表示する（<code>/cost</code> でも同じ）。</td>
+    </tr>
+    <tr>
+      <td><code>/permissions</code></td>
+      <td>ファイル変更やコマンド実行のたびに確認を求めるかどうかのルールを管理する。</td>
+    </tr>
+    <tr>
+      <td><code>/init</code></td>
+      <td>このプロジェクト用の説明ファイル（<code>CLAUDE.md</code>）を作成する。新しいフォルダで最初にやると良い。</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="keys">3. 覚えておくと捗るキー操作</h2>
+<p class="section-desc">マウスを使わず、キーボードだけでサッと操作できる。</p>
+
+<div class="table-wrap">
+<table>
+  <colgroup><col class="col-cmd"><col></colgroup>
+  <thead>
+    <tr><th>キー</th><th>これは何をする？</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Esc</code></td>
+      <td>Claudeが応答・作業している最中に、途中で止めて指示を出し直す。</td>
+    </tr>
+    <tr>
+      <td><code>Ctrl</code> + <code>C</code></td>
+      <td>1回目は入力中のテキストを消す（実行中なら中断）。何もない状態でもう1回押すと終了する。</td>
+    </tr>
+    <tr>
+      <td><code>Ctrl</code> + <code>D</code></td>
+      <td>Claude Codeを終了する。</td>
+    </tr>
+    <tr>
+      <td><code>Esc</code> を2回</td>
+      <td>入力欄が空なら、以前の状態に戻す「巻き戻しメニュー」を開く（コードやり直しに便利）。</td>
+    </tr>
+    <tr>
+      <td><code>!</code> を先頭に付ける</td>
+      <td>そのままターミナルのコマンドとして実行する（例: <code>!git status</code>）。</td>
+    </tr>
+    <tr>
+      <td><code>@</code></td>
+      <td>ファイル名の候補が出てきて、会話中に特定のファイルを指定できる。</td>
+    </tr>
+    <tr>
+      <td><code>Shift</code> + <code>Enter</code></td>
+      <td>改行して複数行の指示を入力する（多くのターミナルでそのまま使用可）。</td>
+    </tr>
+    <tr>
+      <td>&uarr; キー</td>
+      <td>過去に入力したメッセージを呼び戻す。</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="work">4. 作業を進める・見直すときに使うコマンド</h2>
+<p class="section-desc">コードを書いてもらったあと、内容を確認したり、失敗をやり直したりするときに。</p>
+
+<div class="table-wrap">
+<table>
+  <colgroup><col class="col-cmd"><col></colgroup>
+  <thead>
+    <tr><th>コマンド</th><th>これは何をする？</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>/rewind</code></td>
+      <td>会話やコードの変更を、以前の状態に巻き戻す。「やっぱり元に戻したい」ときの安全ネット。</td>
+    </tr>
+    <tr>
+      <td><code>/diff</code></td>
+      <td>今どんな変更が加えられたかを、差分表示で確認する。</td>
+    </tr>
+    <tr>
+      <td><code>/code-review</code></td>
+      <td>今の変更内容にバグや改善点がないか、Claudeにレビューさせる。</td>
+    </tr>
+    <tr>
+      <td><code>/doctor</code></td>
+      <td>Claude Codeのインストールや設定に問題がないか診断する。うまく動かないときに。</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="advanced">5. さらに使いこなしたい人向け（発展編）</h2>
+<p class="section-desc">慣れてきたら覚えると便利。最初は読み飛ばしてOK。</p>
+
+<div class="table-wrap">
+<table>
+  <colgroup><col class="col-cmd"><col></colgroup>
+  <thead>
+    <tr><th>コマンド</th><th>これは何をする？</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>/plan</code></td>
+      <td>大きな変更に着手する前に、計画だけ立てさせてから実行の許可を出す「プランモード」に入る。</td>
+    </tr>
+    <tr>
+      <td><code>/memory</code></td>
+      <td>プロジェクトの説明ファイル（<code>CLAUDE.md</code>）を編集する。</td>
+    </tr>
+    <tr>
+      <td><code>/agents</code></td>
+      <td>特定の作業を任せる「サブエージェント」を作成・管理する。</td>
+    </tr>
+    <tr>
+      <td><code>/mcp</code></td>
+      <td>外部サービス（Slack、Googleカレンダーなど）と連携するMCPサーバーを管理する。</td>
+    </tr>
+    <tr>
+      <td><code>claude update</code></td>
+      <td>Claude Code自体を最新バージョンに更新する。</td>
+    </tr>
+    <tr>
+      <td><code>claude --model &lt;名前&gt;</code></td>
+      <td>起動時に使うモデルを指定する（例: <code>sonnet</code>, <code>opus</code>）。</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<footer>
+  Claude Code チートシート — 個人利用メモ（公式ドキュメントを基に作成）
+</footer>
+
+</main>
+</body>
+</html>
