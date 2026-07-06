@@ -180,6 +180,7 @@
     <li><a href="#keys">覚えておくと捗るキー操作</a></li>
     <li><a href="#work">作業を進める・見直すときに使うコマンド</a></li>
     <li><a href="#advanced">さらに使いこなしたい人向け（発展編）</a></li>
+    <li><a href="#skills">自動でやってくれる便利なスキル</a></li>
   </ol>
 </nav>
 
@@ -262,6 +263,10 @@
       <td>ファイル変更やコマンド実行のたびに確認を求めるかどうかのルールを管理する。</td>
     </tr>
     <tr>
+      <td><code>/fewer-permission-prompts</code></td>
+      <td>過去のやり取りを見て「これは確認不要だろう」という操作を自動で許可リストに追加してくれる。確認ダイアログが多くて煩わしいときに。</td>
+    </tr>
+    <tr>
       <td><code>/init</code></td>
       <td>このプロジェクト用の説明ファイル（<code>CLAUDE.md</code>）を作成する。新しいフォルダで最初にやると良い。</td>
     </tr>
@@ -338,6 +343,26 @@
       <td>今の変更内容にバグや改善点がないか、Claudeにレビューさせる。</td>
     </tr>
     <tr>
+      <td><code>/verify</code></td>
+      <td>変更が「本当に動くか」を、実際にアプリを起動・操作して確認する。テストが通っただけでは分からない不具合に気づける。</td>
+    </tr>
+    <tr>
+      <td><code>/run</code></td>
+      <td>プロジェクトのアプリを実際に起動して、動いている様子を見せてもらう。</td>
+    </tr>
+    <tr>
+      <td><code>/simplify</code></td>
+      <td>バグ探しはせず、コードの重複や無駄を整理してもらう。</td>
+    </tr>
+    <tr>
+      <td><code>/security-review</code></td>
+      <td>変更内容にセキュリティ上の懸念（情報漏洩や認証の穴など）がないか確認する。</td>
+    </tr>
+    <tr>
+      <td><code>/review</code></td>
+      <td>GitHub上のプルリクエストをレビューする。</td>
+    </tr>
+    <tr>
       <td><code>/doctor</code></td>
       <td>Claude Codeのインストールや設定に問題がないか診断する。うまく動かないときに。</td>
     </tr>
@@ -378,6 +403,52 @@
     <tr>
       <td><code>claude --model &lt;名前&gt;</code></td>
       <td>起動時に使うモデルを指定する（例: <code>sonnet</code>, <code>opus</code>）。</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="skills">6. 自動でやってくれる便利なスキル</h2>
+<p class="section-desc">「スキル」は特定の作業を任せるための専用コマンド。<code>/スキル名</code> で明示的に呼び出すか、普通に頼むだけでClaudeが自動的に使ってくれることもある。</p>
+
+<div class="table-wrap">
+<table>
+  <colgroup><col class="col-cmd"><col></colgroup>
+  <thead>
+    <tr><th>スキル</th><th>これは何をする？</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>/deep-research</code></td>
+      <td>1つの質問に対して複数のWeb検索・情報源のクロスチェックを行い、根拠付きのレポートにまとめる。「〇〇についてちゃんと調べて」というときに。</td>
+    </tr>
+    <tr>
+      <td><code>/loop</code></td>
+      <td>指示や別のスキルを一定間隔で繰り返し実行させる（例: <code>/loop 10m デプロイが終わったか確認して</code>）。</td>
+    </tr>
+    <tr>
+      <td><code>/schedule</code></td>
+      <td>決まった時間（毎朝9時など）にクラウド上で自動実行されるタスクを設定する。</td>
+    </tr>
+    <tr>
+      <td><code>/dataviz</code></td>
+      <td>グラフ・チャート・ダッシュボードを作るときに、見やすい配色やレイアウトの指針を適用する。</td>
+    </tr>
+    <tr>
+      <td><code>/claude-in-chrome</code></td>
+      <td>Chromeブラウザを自動操作する（フォーム入力、クリック、スクリーンショット取得など）。</td>
+    </tr>
+    <tr>
+      <td><code>/update-config</code></td>
+      <td>権限設定・環境変数・自動実行の仕組み（フック）など、Claude Code自体の動作設定をまとめて変更する。</td>
+    </tr>
+    <tr>
+      <td><code>/claude-api</code></td>
+      <td>Anthropic API（Claude API）を使ったコードを書く・移行するときのリファレンス。</td>
+    </tr>
+    <tr>
+      <td><code>/keybindings-help</code></td>
+      <td>キーボードショートカットを自分好みにカスタマイズしたいときに。</td>
     </tr>
   </tbody>
 </table>
