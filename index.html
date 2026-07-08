@@ -172,8 +172,52 @@
   .step .d { color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
   @media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
 
+  /* ---- tab bar : segmented control, styled to read as clickable ---- */
+  .tabs {
+    display: flex;
+    gap: 3px;
+    margin-top: 40px;
+    padding: 4px;
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .tab-btn {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .12s, background .12s, box-shadow .12s;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--bg-row); }
+  .tab-btn.active {
+    color: var(--accent);
+    background: var(--bg-elev);
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  .tab-btn.active:hover { background: var(--bg-elev); }
+  .tab-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tab-hint {
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: var(--faint);
+    margin: 8px 2px 0;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
   /* ---- sections ---- */
-  section { margin-top: 52px; scroll-margin-top: 14px; }
+  section { margin-top: 40px; scroll-margin-top: 14px; }
+  .tab-panel > section:first-child { margin-top: 30px; }
   .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
   .sec-idx {
     font-family: var(--mono);
@@ -189,6 +233,17 @@
     letter-spacing: -0.005em;
   }
   .sec-desc { color: var(--muted); font-size: 0.88rem; margin: 6px 0 16px; }
+  h3.subhead {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 26px 0 10px;
+    font-weight: 600;
+  }
+  section > h3.subhead:first-of-type,
+  .panel + h3.subhead { margin-top: 26px; }
 
   /* ---- reference table (editor-output styling) ---- */
   .panel {
@@ -277,9 +332,30 @@
     border-radius: 5px;
     margin-left: 8px;
     vertical-align: middle;
+    white-space: nowrap;
+    display: inline-block;
   }
   .tag.safe { color: var(--good); border: 1px solid color-mix(in srgb, var(--good) 40%, transparent); }
   .tag.care { color: var(--warn); border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent); }
+  .tag.reco { color: var(--accent-2); border: 1px solid color-mix(in srgb, var(--accent-2) 40%, transparent); }
+  .tag.skill { color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
+  .tag.auto { color: var(--muted); border: 1px solid var(--border); }
+
+  /* ---- skills intro callout ---- */
+  .skill-intro {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-2);
+    border-radius: 10px;
+    background: var(--accent-bg);
+    padding: 16px 20px;
+    margin-bottom: 30px;
+    font-size: 0.88rem;
+  }
+  .skill-intro p { margin: 0 0 8px; }
+  .skill-intro p:last-child { margin-bottom: 0; }
+  .skill-intro b { color: var(--text); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; color: var(--muted); font-size: 0.8rem; align-items: center; }
+  .legend span.tag { margin-left: 0; }
 
   /* ---- tips callout ---- */
   .tips {
@@ -351,7 +427,7 @@
     <div>
       <div class="kicker"><span class="c">~/dev</span> <span class="p">$</span> claude</div>
       <h1>Claude Code 早見表<span class="blink">▊</span></h1>
-      <p class="lead">ターミナルではじめて Claude Code を触る人のための、実用リファレンス。上から順に、覚える必要のある順番で並べています。</p>
+      <p class="lead">ターミナルではじめて Claude Code を触る人のための、実用リファレンス。下のタブでジャンルを切り替えられます。</p>
     </div>
     <button class="theme-btn" id="themeToggle" type="button" aria-label="配色を切り替える">
       <span class="dot"></span><span id="themeLabel">dark</span>
@@ -360,7 +436,7 @@
 
   <div class="note">
     <span class="m">//</span>
-    <span><b>用語だけ先に：</b>「セッション」＝Claude Code との1回の会話。「スラッシュコマンド」＝会話中に <code>/</code> から打つ命令。<b>コマンドはクリックでコピー</b>できます。</span>
+    <span><b>用語だけ先に：</b>「セッション」＝Claude Code との1回の会話。「スラッシュコマンド」＝会話中に <code>/</code> から打つ命令。「スキル」＝特定の作業を任せる専用ワークフロー（詳しくは「スキル」タブへ）。<b>コマンドはクリックでコピー</b>できます。</span>
   </div>
 
   <!-- quickstart -->
@@ -385,131 +461,254 @@
     </div>
   </div>
 
-  <!-- 00 terminal basics -->
-  <section id="s00">
-    <div class="sec-head"><span class="sec-idx">00</span><h2>ターミナルの基本移動</h2></div>
-    <p class="sec-desc">Claude Code の前に、フォルダを行き来する最低限の操作。Windows(PowerShell)・Mac 共通で使えます。</p>
-    <div class="panel"><div class="tbl-scroll"><table>
-      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
-      <tbody>
-        <tr><td class="k"><span class="cmd">cd <span class="flag">パス</span></span></td><td class="desc">指定したフォルダへ移動する。<code>cd ..</code> で一つ上の階層へ戻る。</td></tr>
-        <tr><td class="k"><span class="cmd">ls</span></td><td class="desc">今いるフォルダの中身（ファイル・フォルダ）を一覧表示する。</td></tr>
-        <tr><td class="k"><span class="cmd">pwd</span></td><td class="desc">今どこのフォルダにいるかのパスを表示する。「迷子」になったときに。</td></tr>
-        <tr><td class="k"><span class="cmd">mkdir <span class="flag">名前</span></span></td><td class="desc">新しいフォルダを作る。</td></tr>
-      </tbody>
-    </table></div></div>
-  </section>
+  <!-- tab bar -->
+  <div class="tabs" role="tablist" aria-label="ジャンル">
+    <button class="tab-btn" role="tab" data-tab="basic" id="tab-basic" aria-controls="panel-basic">基本</button>
+    <button class="tab-btn" role="tab" data-tab="talk" id="tab-talk" aria-controls="panel-talk">会話操作</button>
+    <button class="tab-btn" role="tab" data-tab="review" id="tab-review" aria-controls="panel-review">レビュー</button>
+    <button class="tab-btn" role="tab" data-tab="skills" id="tab-skills" aria-controls="panel-skills">スキル</button>
+    <button class="tab-btn" role="tab" data-tab="mcp" id="tab-mcp" aria-controls="panel-mcp">MCP</button>
+    <button class="tab-btn" role="tab" data-tab="advanced" id="tab-advanced" aria-controls="panel-advanced">発展</button>
+  </div>
+  <p class="tab-hint">👆 クリックしてジャンルを切り替え（← → キーでも移動できます）</p>
 
-  <!-- 01 start / resume -->
-  <section id="s01">
-    <div class="sec-head"><span class="sec-idx">01</span><h2>セッションの開始・再開</h2></div>
-    <p class="sec-desc">Claude Code を立ち上げる／過去の会話に戻る、ターミナルで打つコマンド。まず覚える系。</p>
-    <div class="panel"><div class="tbl-scroll"><table>
-      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
-      <tbody>
-        <tr><td class="k"><span class="cmd">claude</span></td><td class="desc">今いるフォルダで、新しい会話を始める。</td></tr>
-        <tr><td class="k"><span class="cmd">claude <span class="flag">"やりたいこと"</span></span></td><td class="desc">最初の指示を渡した状態で、新しい会話をいきなり開始する。</td></tr>
-        <tr><td class="k"><span class="cmd">claude <span class="flag">--continue</span></span><span class="alias"><b>-c</b></span></td><td class="desc">今いるフォルダの一番最近の会話に、一覧を挟まず即座に戻る。「さっきの続き」に。</td></tr>
-        <tr><td class="k"><span class="cmd">claude <span class="flag">--resume</span></span><span class="alias"><b>-r</b></span></td><td class="desc">過去の会話の一覧（ピッカー）を出し、選んで開く。どれか選びたいときに。</td></tr>
-        <tr><td class="k"><span class="cmd">claude <span class="flag">-p "質問"</span></span></td><td class="desc">対話モードに入らず、1回だけ質問して答えを表示し終了する。サッと調べたいときに。</td></tr>
-        <tr><td class="k"><span class="cmd">claude <span class="flag">--no-session-persistence</span></span></td><td class="desc">この回の会話を履歴に残さない（<code>-p</code> と併用）。一回きり・残したくない作業に。</td></tr>
-      </tbody>
-    </table></div></div>
-  </section>
+  <!-- ===================== panel: basic ===================== -->
+  <div class="tab-panel" id="panel-basic" role="tabpanel" aria-labelledby="tab-basic">
 
-  <!-- 02 in-conversation slash -->
-  <section id="s02">
-    <div class="sec-head"><span class="sec-idx">02</span><h2>会話中によく使うコマンド</h2></div>
-    <p class="sec-desc">会話の中で <code>/</code> を打つと出るスラッシュコマンド。使用頻度の高い順。</p>
-    <div class="panel"><div class="tbl-scroll"><table>
-      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
-      <tbody>
-        <tr><td class="k"><span class="cmd slash">/clear</span></td><td class="desc">会話をリセットして新しい話題を始める。前の会話は消えず <code>--resume</code> で開ける。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/compact</span></td><td class="desc">会話が長くなったとき、内容を要約して軽くする（同じ会話のまま続けたいとき）。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/context</span></td><td class="desc">今どれだけ会話の「記憶容量」を使っているかを可視化する。重くなってきたときに。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/help</span></td><td class="desc">使い方のヘルプ・コマンド一覧を表示する。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/model</span></td><td class="desc">使う AI モデルを切り替える。引数なしで実行すると選択メニューが出る。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/usage</span></td><td class="desc">今のセッションの利用料金・使用量を表示する（<code>/cost</code> でも同じ）。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/permissions</span></td><td class="desc">ファイル変更やコマンド実行のたびに確認するか、のルールを管理する。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/fewer-permission-prompts</span></td><td class="desc">過去のやり取りから「確認不要」な操作を自動で許可リスト化。確認が多くて煩わしいときに。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/init</span></td><td class="desc">このプロジェクト用の説明ファイル <code>CLAUDE.md</code> を作る。新フォルダで最初にやると良い。</td></tr>
-      </tbody>
-    </table></div></div>
-  </section>
+    <section id="s00">
+      <div class="sec-head"><span class="sec-idx">00</span><h2>ターミナルの基本移動</h2></div>
+      <p class="sec-desc">Claude Code の前に、フォルダを行き来する最低限の操作。Windows(PowerShell)・Mac 共通で使えます。</p>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd">cd <span class="flag">パス</span></span></td><td class="desc">指定したフォルダへ移動する。<code>cd ..</code> で一つ上の階層へ戻る。</td></tr>
+          <tr><td class="k"><span class="cmd">ls</span></td><td class="desc">今いるフォルダの中身（ファイル・フォルダ）を一覧表示する。</td></tr>
+          <tr><td class="k"><span class="cmd">pwd</span></td><td class="desc">今どこのフォルダにいるかのパスを表示する。「迷子」になったときに。</td></tr>
+          <tr><td class="k"><span class="cmd">mkdir <span class="flag">名前</span></span></td><td class="desc">新しいフォルダを作る。</td></tr>
+        </tbody>
+      </table></div></div>
+    </section>
 
-  <!-- 03 keyboard -->
-  <section id="s03">
-    <div class="sec-head"><span class="sec-idx">03</span><h2>キーボード操作</h2></div>
-    <p class="sec-desc">マウスを使わず、キーだけでサッと操作する。太字は特に出番が多いもの。</p>
-    <div class="panel"><div class="tbl-scroll"><table>
-      <thead><tr><th>キー</th><th>これは何をする？</th></tr></thead>
-      <tbody>
-        <tr><td class="k"><kbd>Esc</kbd></td><td class="desc">Claude が応答・作業している最中に途中で止め、指示を出し直す。<span class="tag safe">安全</span></td></tr>
-        <tr><td class="k"><kbd>Esc</kbd><span class="plus">×2</span></td><td class="desc">入力欄が空のとき、以前の状態に戻す「巻き戻しメニュー」を開く。やり直しに便利。</td></tr>
-        <tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>C</kbd></td><td class="desc">1回目は入力を消す（実行中なら中断）。空の状態でもう1回押すと終了。</td></tr>
-        <tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>D</kbd></td><td class="desc">Claude Code を終了する。</td></tr>
-        <tr><td class="k"><kbd>Shift</kbd><span class="plus">+</span><kbd>Tab</kbd></td><td class="desc">権限モードを切り替える（計画だけ立てる「プランモード」／編集を自動承認 など）。</td></tr>
-        <tr><td class="k"><kbd>!</kbd><span class="plus">先頭</span></td><td class="desc">その行をそのままターミナルのコマンドとして実行する（例: <code>!git status</code>）。</td></tr>
-        <tr><td class="k"><kbd>@</kbd></td><td class="desc">ファイル名の候補が出て、会話中に特定のファイルを指し示せる。</td></tr>
-        <tr><td class="k"><kbd>Shift</kbd><span class="plus">+</span><kbd>Enter</kbd></td><td class="desc">改行して複数行の指示を入力する（多くのターミナルでそのまま使える）。</td></tr>
-        <tr><td class="k"><kbd>↑</kbd></td><td class="desc">過去に入力したメッセージを呼び戻す。</td></tr>
-        <tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>L</kbd></td><td class="desc">画面表示が崩れたときに、描画をきれいに引き直す（会話内容は消えない）。</td></tr>
-      </tbody>
-    </table></div></div>
-  </section>
+    <section id="s01">
+      <div class="sec-head"><span class="sec-idx">01</span><h2>セッションの開始・再開</h2></div>
+      <p class="sec-desc">Claude Code を立ち上げる／過去の会話に戻る、ターミナルで打つコマンド。まず覚える系。</p>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd">claude</span></td><td class="desc">今いるフォルダで、新しい会話を始める。</td></tr>
+          <tr><td class="k"><span class="cmd">claude <span class="flag">"やりたいこと"</span></span></td><td class="desc">最初の指示を渡した状態で、新しい会話をいきなり開始する。</td></tr>
+          <tr><td class="k"><span class="cmd">claude <span class="flag">--continue</span></span><span class="alias"><b>-c</b></span></td><td class="desc">今いるフォルダの一番最近の会話に、一覧を挟まず即座に戻る。「さっきの続き」に。</td></tr>
+          <tr><td class="k"><span class="cmd">claude <span class="flag">--resume</span></span><span class="alias"><b>-r</b></span></td><td class="desc">過去の会話の一覧（ピッカー）を出し、選んで開く。どれか選びたいときに。</td></tr>
+          <tr><td class="k"><span class="cmd">claude <span class="flag">-p "質問"</span></span></td><td class="desc">対話モードに入らず、1回だけ質問して答えを表示し終了する。サッと調べたいときに。</td></tr>
+          <tr><td class="k"><span class="cmd">claude <span class="flag">--no-session-persistence</span></span></td><td class="desc">この回の会話を履歴に残さない（<code>-p</code> と併用）。一回きり・残したくない作業に。</td></tr>
+        </tbody>
+      </table></div></div>
+    </section>
 
-  <!-- 04 review / redo -->
-  <section id="s04">
-    <div class="sec-head"><span class="sec-idx">04</span><h2>作業を見直す・やり直す</h2></div>
-    <p class="sec-desc">コードを書いてもらったあと、確認したり、失敗を戻したりするときに。</p>
-    <div class="panel"><div class="tbl-scroll"><table>
-      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
-      <tbody>
-        <tr><td class="k"><span class="cmd slash">/rewind</span></td><td class="desc">会話やコードの変更を以前の状態に巻き戻す。「元に戻したい」ときの安全ネット。<span class="tag safe">安全</span></td></tr>
-        <tr><td class="k"><span class="cmd slash">/diff</span></td><td class="desc">今どんな変更が加えられたかを、差分表示で確認する。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/code-review</span></td><td class="desc">今の変更にバグや改善点がないか、Claude にレビューさせる。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/verify</span></td><td class="desc">変更が「本当に動くか」を、実際にアプリを起動・操作して確認する。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/run</span></td><td class="desc">プロジェクトのアプリを実際に起動し、動いている様子を見せてもらう。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/simplify</span></td><td class="desc">バグ探しはせず、コードの重複や無駄を整理してもらう。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/security-review</span></td><td class="desc">変更にセキュリティ上の懸念（情報漏洩・認証の穴 など）がないか確認する。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/doctor</span></td><td class="desc">Claude Code のインストールや設定に問題がないか診断する。動かないときに。</td></tr>
-      </tbody>
-    </table></div></div>
-  </section>
+  </div>
 
-  <!-- 05 skills -->
-  <section id="s05">
-    <div class="sec-head"><span class="sec-idx">05</span><h2>便利なスキル</h2></div>
-    <p class="sec-desc">「スキル」は特定の作業を任せる専用コマンド。<code>/名前</code> で呼ぶほか、普通に頼むと Claude が自動で使うこともある。</p>
-    <div class="panel"><div class="tbl-scroll"><table>
-      <thead><tr><th>スキル</th><th>これは何をする？</th></tr></thead>
-      <tbody>
-        <tr><td class="k"><span class="cmd slash">/deep-research</span></td><td class="desc">1つの問いに複数の Web 検索とクロスチェックを行い、根拠付きのレポートにまとめる。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/loop</span></td><td class="desc">指示や別スキルを一定間隔で繰り返す（例: <code>/loop 10m デプロイ終わった？</code>）。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/schedule</span></td><td class="desc">決まった時間（毎朝9時など）にクラウドで自動実行されるタスクを設定する。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/dataviz</span></td><td class="desc">グラフ・ダッシュボードを作るとき、見やすい配色やレイアウトの指針を適用する。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/update-config</span></td><td class="desc">権限・環境変数・自動実行（フック）など Claude Code 自体の設定をまとめて変える。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/keybindings-help</span></td><td class="desc">キーボードショートカットを自分好みにカスタマイズしたいときに。</td></tr>
-      </tbody>
-    </table></div></div>
-  </section>
+  <!-- ===================== panel: talk ===================== -->
+  <div class="tab-panel" id="panel-talk" role="tabpanel" aria-labelledby="tab-talk">
 
-  <!-- 06 advanced -->
-  <section id="s06">
-    <div class="sec-head"><span class="sec-idx">06</span><h2>発展編</h2></div>
-    <p class="sec-desc">慣れてきたら覚えると便利。最初は読み飛ばしてOK。</p>
-    <div class="panel"><div class="tbl-scroll"><table>
-      <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
-      <tbody>
-        <tr><td class="k"><span class="cmd slash">/plan</span></td><td class="desc">大きな変更の前に、計画だけ立てさせてから実行の許可を出す「プランモード」に入る。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/memory</span></td><td class="desc">プロジェクトの説明ファイル <code>CLAUDE.md</code> を編集する。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/agents</span></td><td class="desc">特定の作業を任せる「サブエージェント」を作成・管理する。</td></tr>
-        <tr><td class="k"><span class="cmd slash">/mcp</span></td><td class="desc">外部サービス（Slack・Google カレンダーなど）と連携する MCP サーバーを管理する。</td></tr>
-        <tr><td class="k"><span class="cmd">claude <span class="flag">update</span></span></td><td class="desc">Claude Code 自体を最新バージョンに更新する。</td></tr>
-        <tr><td class="k"><span class="cmd">claude <span class="flag">--model 名前</span></span></td><td class="desc">起動時に使うモデルを指定する（例: <code>sonnet</code> / <code>opus</code>）。</td></tr>
-      </tbody>
-    </table></div></div>
-  </section>
+    <section id="s02">
+      <div class="sec-head"><span class="sec-idx">02</span><h2>会話中によく使うコマンド</h2></div>
+      <p class="sec-desc">会話の中で <code>/</code> を打つと出るスラッシュコマンド。使用頻度の高い順。</p>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd slash">/clear</span></td><td class="desc">会話をリセットして新しい話題を始める。前の会話は消えず <code>--resume</code> で開ける。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/compact</span></td><td class="desc">会話が長くなったとき、内容を要約して軽くする（同じ会話のまま続けたいとき）。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/context</span></td><td class="desc">今どれだけ会話の「記憶容量」を使っているかを可視化する。重くなってきたときに。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/help</span></td><td class="desc">使い方のヘルプ・コマンド一覧を表示する。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/model</span></td><td class="desc">使う AI モデルを切り替える。引数なしで実行すると選択メニューが出る。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/usage</span></td><td class="desc">今のセッションの利用料金・使用量を表示する（<code>/cost</code> でも同じ）。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/permissions</span></td><td class="desc">ファイル変更やコマンド実行のたびに確認するか、のルールを管理する。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/init</span></td><td class="desc">このプロジェクト用の説明ファイル <code>CLAUDE.md</code> を作る。新フォルダで最初にやると良い。<span class="tag skill">SKILL</span></td></tr>
+        </tbody>
+      </table></div></div>
+    </section>
+
+    <section id="s03">
+      <div class="sec-head"><span class="sec-idx">03</span><h2>キーボード操作</h2></div>
+      <p class="sec-desc">マウスを使わず、キーだけでサッと操作する。太字は特に出番が多いもの。</p>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>キー</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><kbd>Esc</kbd></td><td class="desc">Claude が応答・作業している最中に途中で止め、指示を出し直す。<span class="tag safe">安全</span></td></tr>
+          <tr><td class="k"><kbd>Esc</kbd><span class="plus">×2</span></td><td class="desc">入力欄が空のとき、以前の状態に戻す「巻き戻しメニュー」を開く。やり直しに便利。</td></tr>
+          <tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>C</kbd></td><td class="desc">1回目は入力を消す（実行中なら中断）。空の状態でもう1回押すと終了。</td></tr>
+          <tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>D</kbd></td><td class="desc">Claude Code を終了する。</td></tr>
+          <tr><td class="k"><kbd>Shift</kbd><span class="plus">+</span><kbd>Tab</kbd></td><td class="desc">権限モードを切り替える（計画だけ立てる「プランモード」／編集を自動承認 など）。</td></tr>
+          <tr><td class="k"><kbd>!</kbd><span class="plus">先頭</span></td><td class="desc">その行をそのままターミナルのコマンドとして実行する（例: <code>!git status</code>）。</td></tr>
+          <tr><td class="k"><kbd>@</kbd></td><td class="desc">ファイル名の候補が出て、会話中に特定のファイルを指し示せる。</td></tr>
+          <tr><td class="k"><kbd>Shift</kbd><span class="plus">+</span><kbd>Enter</kbd></td><td class="desc">改行して複数行の指示を入力する（多くのターミナルでそのまま使える）。</td></tr>
+          <tr><td class="k"><kbd>↑</kbd></td><td class="desc">過去に入力したメッセージを呼び戻す。</td></tr>
+          <tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>L</kbd></td><td class="desc">画面表示が崩れたときに、描画をきれいに引き直す（会話内容は消えない）。</td></tr>
+        </tbody>
+      </table></div></div>
+    </section>
+
+  </div>
+
+  <!-- ===================== panel: review ===================== -->
+  <div class="tab-panel" id="panel-review" role="tabpanel" aria-labelledby="tab-review">
+
+    <section id="s04">
+      <div class="sec-head"><span class="sec-idx">04</span><h2>作業を見直す・やり直す</h2></div>
+      <p class="sec-desc">コードを書いてもらったあと、確認したり、失敗を戻したりするときに。<span class="tag skill">SKILL</span> は「スキル」という仕組みで動く高機能コマンド（一覧は「スキル」タブへ）。</p>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd slash">/rewind</span></td><td class="desc">会話やコードの変更を以前の状態に巻き戻す。「元に戻したい」ときの安全ネット。<span class="tag safe">安全</span></td></tr>
+          <tr><td class="k"><span class="cmd slash">/diff</span></td><td class="desc">今どんな変更が加えられたかを、差分表示で確認する。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/code-review</span></td><td class="desc">今の変更にバグや改善点がないか、Claude にレビューさせる。<code>--fix</code> で指摘を自動修正、<code>--comment</code> でPRにインラインコメント。<code>ultra</code> を付けると複数エージェントによる本格レビューになる（時間・コストがかかる）。<span class="tag skill">SKILL</span><span class="tag reco">おすすめ</span></td></tr>
+          <tr><td class="k"><span class="cmd slash">/verify</span></td><td class="desc">変更が「本当に動くか」を、実際にアプリを起動・操作して確認する。テストが通っていても機能自体が壊れていることはあるので、コミット前の仕上げに。<span class="tag skill">SKILL</span><span class="tag reco">おすすめ</span></td></tr>
+          <tr><td class="k"><span class="cmd slash">/run</span></td><td class="desc">プロジェクトのアプリを実際に起動し、動いている様子を見せてもらう。<span class="tag skill">SKILL</span></td></tr>
+          <tr><td class="k"><span class="cmd slash">/simplify</span></td><td class="desc">バグ探しはせず、コードの重複や無駄を整理してもらう。<span class="tag skill">SKILL</span></td></tr>
+          <tr><td class="k"><span class="cmd slash">/security-review</span></td><td class="desc">変更にセキュリティ上の懸念（情報漏洩・認証の穴 など）がないか確認する。<span class="tag skill">SKILL</span></td></tr>
+          <tr><td class="k"><span class="cmd slash">/doctor</span></td><td class="desc">Claude Code のインストールや設定に問題がないか診断する。動かないときに。</td></tr>
+        </tbody>
+      </table></div></div>
+    </section>
+
+  </div>
+
+  <!-- ===================== panel: skills ===================== -->
+  <div class="tab-panel" id="panel-skills" role="tabpanel" aria-labelledby="tab-skills">
+
+    <section id="s05">
+      <div class="sec-head"><span class="sec-idx">05</span><h2>スキル一覧</h2></div>
+      <p class="sec-desc">コードの品質まわりのスキル（<code>/code-review</code> など）は「レビュー」タブにまとめてあります。ここではそれ以外の、知っておくと世界が広がるスキルを紹介します。</p>
+
+      <div class="skill-intro">
+        <p><b>スキルとは？</b> 特定の作業をまとめて任せられる専用ワークフロー。<code>/名前</code> で明示的に呼び出せるほか、頼み方によっては呼ばなくても Claude が自動で使うことがある（例：グラフを頼むと自動で <code>dataviz</code> の指針が働く）。スラッシュコマンドより手順が凝っていて、複数ステップの判断が挟まるのが特徴。</p>
+        <div class="legend">
+          <span>凡例：</span>
+          <span class="tag reco">おすすめ</span><span>まず知っておきたいもの</span>
+          <span class="tag auto">自動発動あり</span><span>頼み方次第で呼ばなくても働く</span>
+        </div>
+      </div>
+
+      <h3 class="subhead">調べる・自動化する</h3>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>スキル</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd slash">/deep-research</span></td><td class="desc">1つの問いに対して複数の Web 検索と裏取りを行い、根拠付きのレポートにまとめる。質問が曖昧だと、先に絞り込みの質問をしてくれる。<span class="tag reco">おすすめ</span></td></tr>
+          <tr><td class="k"><span class="cmd slash">/loop</span></td><td class="desc">指示や別のスキルを一定間隔で繰り返す（例: <code>/loop 10m デプロイ終わった？</code>）。間隔を省略すると Claude 自身がペースを決める。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/schedule</span></td><td class="desc">「毎朝9時に」のように、決まった時刻・周期でクラウド上で自動実行されるタスク（ルーティン）を作る。1回だけの予約実行にも使える。</td></tr>
+        </tbody>
+      </table></div></div>
+
+      <h3 class="subhead">見た目・成果物を作る</h3>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>スキル</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd slash">/dataviz</span></td><td class="desc">グラフ・ダッシュボード・チャートを作る前に、見やすい配色やレイアウトの指針を適用する。「グラフ作って」と頼むだけでも自動的に働くことが多い。<span class="tag auto">自動発動あり</span></td></tr>
+          <tr><td class="k"><span class="cmd">artifact-design</span></td><td class="desc">共有可能な Web ページ（Artifact）を作る前のデザイン方針。名指しで呼ぶことは少なく、Artifact 作成時に裏側で参照される。<span class="tag auto">自動発動あり</span></td></tr>
+        </tbody>
+      </table></div></div>
+
+      <h3 class="subhead">GitHub 連携</h3>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>スキル</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd slash">/review</span></td><td class="desc">GitHub の Pull Request をレビューする。手元でまだPRになっていない差分をレビューしたいときは <code>/code-review</code> を使う。</td></tr>
+        </tbody>
+      </table></div></div>
+
+      <h3 class="subhead">Claude Code 自体の設定</h3>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>スキル</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd slash">/update-config</span></td><td class="desc">権限・環境変数・自動実行（フック）など、Claude Code 自体の設定ファイル（<code>settings.json</code>）をまとめて変更する。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/fewer-permission-prompts</span></td><td class="desc">過去のやり取りから「確認不要」でよい操作を洗い出し、許可リストに追加する。確認ダイアログが多くて煩わしいときに。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/keybindings-help</span></td><td class="desc">キーボードショートカットを自分好みにカスタマイズしたいときに。</td></tr>
+        </tbody>
+      </table></div></div>
+
+      <h3 class="subhead">開発者向けリファレンス</h3>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>スキル</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd">claude-api</span></td><td class="desc">Claude API / SDK について聞くと、モデルID・料金・キャッシュなど最新の一次情報を調べて答えてくれる。Claude や Anthropic が話題に出ると自動的に働く。<span class="tag auto">自動発動あり</span></td></tr>
+          <tr><td class="k"><span class="cmd slash">/claude-in-chrome</span></td><td class="desc">Chrome ブラウザを自動操作する（クリック・フォーム入力・スクリーンショット・コンソールログの確認など）。Web 画面での動作確認を頼むときに。</td></tr>
+        </tbody>
+      </table></div></div>
+
+    </section>
+
+  </div>
+
+  <!-- ===================== panel: mcp ===================== -->
+  <div class="tab-panel" id="panel-mcp" role="tabpanel" aria-labelledby="tab-mcp">
+
+    <section id="s06">
+      <div class="sec-head"><span class="sec-idx">06</span><h2>MCP — 外部サービスとつなぐ</h2></div>
+      <p class="sec-desc">GitHub・Slack・ブラウザなど、Claude Code の外にあるサービスや道具とつなぐための仕組み。</p>
+
+      <div class="skill-intro">
+        <p><b>MCP（Model Context Protocol）とは？</b> Claude のようなAIと、外部のツール・データソースをつなぐための共通規格。たとえるなら「差し込み口」。GitHubやSlack、Google Driveなど、サービスごとの“差し込みパーツ”（MCPサーバー）をつなぐと、Claude がそのサービスを直接操作できるようになる（例：Slackにメッセージを送る、GitHubのIssueを見る、ブラウザを操作する）。</p>
+        <p>このチートシートを作る作業でも、実はブラウザを自動操作する <code>claude-in-chrome</code> という MCP サーバーを使って動作確認をしています。</p>
+      </div>
+
+      <h3 class="subhead">Claude Code（ターミナル）での管理</h3>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd slash">/mcp</span></td><td class="desc">今つながっている MCP サーバーの一覧確認・接続・認証などを行う。まずはこれで様子を見る。</td></tr>
+          <tr><td class="k"><span class="cmd">claude <span class="flag">mcp add</span></span></td><td class="desc">ターミナルから新しい MCP サーバーを追加する。詳しい書き方は <code>claude mcp add --help</code> で確認できる。</td></tr>
+          <tr><td class="k"><span class="cmd">.mcp.json</span></td><td class="desc">プロジェクトのフォルダにこのファイルを置くと、そのプロジェクトを開いた人みんなと接続設定を共有できる（チームでの利用に）。</td></tr>
+        </tbody>
+      </table></div></div>
+      <p class="sec-desc">設定の範囲（スコープ）には「自分のPC・このプロジェクトだけ」「<code>.mcp.json</code> でチーム共有」「自分のPC全体・どのプロジェクトでも」の3段階がある。迷ったら <code>/mcp</code> の案内に従えばOK。</p>
+
+      <h3 class="subhead">代表的な MCP サーバーの例</h3>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>サービス</th><th>つなぐと何ができる？</th></tr></thead>
+        <tbody>
+          <tr><td class="k">GitHub</td><td class="desc">Issue や Pull Request の確認・作成など、GitHub上の操作を会話の中から直接行える。</td></tr>
+          <tr><td class="k">Slack</td><td class="desc">チャンネルやスレッドの検索・既読、メッセージの下書き作成・送信など。</td></tr>
+          <tr><td class="k">Google Workspace</td><td class="desc">Gmail の検索、Google カレンダーの予定作成、Google Drive のファイル検索・閲覧など。</td></tr>
+          <tr><td class="k">ブラウザ（Chrome）</td><td class="desc">実際のブラウザを操作して、クリック・フォーム入力・スクリーンショット・コンソールログの確認ができる。</td></tr>
+          <tr><td class="k">データベース系</td><td class="desc">Postgres・SQLite など手元のデータベースに直接問い合わせて中身を確認できる。</td></tr>
+          <tr><td class="k">Notion / Linear / Figma</td><td class="desc">ドキュメント・課題管理・デザインファイルなど、開発でよく使う周辺サービスとの連携。</td></tr>
+        </tbody>
+      </table></div></div>
+
+      <h3 class="subhead">ブラウザ版・デスクトップ版との関係</h3>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>場所</th><th>MCP・連携の設定はどこでする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Claude Code（ターミナル）</td><td class="desc">上の表の通り、<code>/mcp</code> や <code>.mcp.json</code> などターミナル側で個別に設定する。</td></tr>
+          <tr><td class="k">claude.ai（ブラウザ）／デスクトップアプリ</td><td class="desc">「設定 → コネクタ」画面から Google Drive・Gmail・Slack などをつなぐ。こちらはアカウント単位の設定で、ブラウザ版とデスクトップアプリで共通。</td></tr>
+        </tbody>
+      </table></div></div>
+      <p class="sec-desc"><b>つながり方は自動では引き継がれない。</b>ブラウザ版やデスクトップアプリで Slack や Google Drive をつないでも、ターミナルの Claude Code には自動で反映されない。それぞれの場所で別々に接続する必要がある（Mac/WSL 環境では、デスクトップアプリの設定を一度だけ Claude Code 側に取り込むコマンドが用意されていることもあるが、常時同期されるわけではない）。</p>
+
+    </section>
+
+  </div>
+
+  <!-- ===================== panel: advanced ===================== -->
+  <div class="tab-panel" id="panel-advanced" role="tabpanel" aria-labelledby="tab-advanced">
+
+    <section id="s07">
+      <div class="sec-head"><span class="sec-idx">07</span><h2>発展編</h2></div>
+      <p class="sec-desc">慣れてきたら覚えると便利。最初は読み飛ばしてOK。</p>
+      <div class="panel"><div class="tbl-scroll"><table>
+        <thead><tr><th>コマンド</th><th>これは何をする？</th></tr></thead>
+        <tbody>
+          <tr><td class="k"><span class="cmd slash">/plan</span></td><td class="desc">大きな変更の前に、計画だけ立てさせてから実行の許可を出す「プランモード」に入る。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/memory</span></td><td class="desc">プロジェクトの説明ファイル <code>CLAUDE.md</code> を編集する。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/agents</span></td><td class="desc">特定の作業を任せる「サブエージェント」を作成・管理する。並行して調べ物をさせたいときなどに。</td></tr>
+          <tr><td class="k"><span class="cmd slash">/code-review ultra</span></td><td class="desc">クラウド上で複数エージェントが並行してレビューする「ウルトラレビュー」。<code>PR番号</code> を付けると GitHub の PR も対象にできる。課金・時間がかかるぶん本格的。</td></tr>
+          <tr><td class="k"><span class="cmd">claude <span class="flag">update</span></span></td><td class="desc">Claude Code 自体を最新バージョンに更新する。</td></tr>
+          <tr><td class="k"><span class="cmd">claude <span class="flag">--model 名前</span></span></td><td class="desc">起動時に使うモデルを指定する（例: <code>sonnet</code> / <code>opus</code>）。</td></tr>
+        </tbody>
+      </table></div></div>
+    </section>
+
+  </div>
 
   <!-- tips -->
   <div class="tips">
@@ -576,6 +775,39 @@
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copy(); }
     });
   });
+
+  // tabs
+  var tabBtns = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+  function selectTab(name) {
+    tabBtns.forEach(function (b) {
+      var active = b.dataset.tab === name;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+      b.tabIndex = active ? 0 : -1;
+    });
+    panels.forEach(function (p) {
+      p.classList.toggle('active', p.id === 'panel-' + name);
+    });
+    try { localStorage.setItem('cc-tab', name); } catch (e) {}
+  }
+  tabBtns.forEach(function (btn, i) {
+    btn.addEventListener('click', function () { selectTab(btn.dataset.tab); });
+    btn.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        var next = e.key === 'ArrowRight' ? (i + 1) % tabBtns.length : (i - 1 + tabBtns.length) % tabBtns.length;
+        tabBtns[next].focus();
+        selectTab(tabBtns[next].dataset.tab);
+      }
+    });
+  });
+  var initial = 'basic';
+  try {
+    var savedTab = localStorage.getItem('cc-tab');
+    if (savedTab && document.getElementById('panel-' + savedTab)) initial = savedTab;
+  } catch (e) {}
+  selectTab(initial);
 })();
 </script>
 </body>
